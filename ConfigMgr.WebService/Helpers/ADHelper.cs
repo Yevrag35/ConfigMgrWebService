@@ -8,6 +8,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 
 namespace ConfigMgr
 {
@@ -18,7 +19,7 @@ namespace ConfigMgr
         #region ADD METHODS
         public bool AddADComputerToGroup(string groupName, string computerName)
         {
-
+            this.OnLogTriggered(LogTriggerAction.Begin, MethodBase.GetCurrentMethod());
         }
 
         #endregion

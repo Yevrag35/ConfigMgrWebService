@@ -1,36 +1,75 @@
-﻿using ConfigMgr.Events;
+﻿using ConfigMgr.Enums;
+using ConfigMgr.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Web;
 
 namespace ConfigMgr
 {
     public class Helper : ITriggerLog
     {
+        private const string EVENT_BEG_TRIGGER_MSG = "Web service method {0} was triggered from {1}";
+        private const string EVENT_END_TRIGGER_MSG = "Web service method {0} completed.  Elapsed time: {1}";
         private const string EVENT_LOG_SOURCE = "ConfigMgr Web Service";
         private const string EVENT_LOG_SOURCE_ACT = EVENT_LOG_SOURCE + " Activity";
         private const EventLogEntryType ID_DEF = EventLogEntryType.Information;
         private const int ID_INFO = 1000;
         private const int ID_WARN = 1001;
         private const int ID_ERR = 1002;
+        private const string ELAPSED_FORMAT = "{0:00}:{1:00}:{2:00}";
 
         private Stopwatch _timer;
 
-        public Helper()
-        {
-            _timer = new Stopwatch();
-        }
+        public event LogTriggerEventHandler LogTriggered;
+
+        public Helper() => _timer = new Stopwatch();
 
         #region ITriggerLog Methods
-        public void StartTimer() => _timer.Start();
+        private void OnLogTriggered(LogTriggerEventArgs e)
+        {
+            if (this.LogTriggered != null)
+                this.LogTriggered(this, e);
+        }
+        protected private void OnLogTriggered(LogTriggerAction action, string method, string address)
+        {
+            this.OnLogTriggered(new LogTriggerEventArgs(action, method, address));
+        }
+
+        private void StartTimer() => _timer.Start();
+
+        private TimeSpan StopTimer()
+        {
+            var timeSpan = _timer.Elapsed;
+            _timer.Reset();
+
+            return timeSpan;
+        }
+
+        public void MethodBegin(MethodBase methodBase, string userHostAddress)
+        {
+            this.StartTimer();
+            string msg = string.Format(EVENT_BEG_TRIGGER_MSG, methodBase.Name, userHostAddress);
+            this.WriteEventLog(msg);
+        }
+
+        public void MethodEnd(MethodBase methodBase)
+        {
+            TimeSpan ts = this.StopTimer();
+            string elapsedTime = string.Format(ELAPSED_FORMAT, ts.Hours, ts.Minutes, ts.Seconds);
+            string endMsg = string.Format(EVENT_END_TRIGGER_MSG, methodBase.Name, elapsedTime);
+            this.WriteEventLog(endMsg);
+        }
 
         #endregion
 
-        public string ConvertFromSecureString(SecureString ss)
+        public static string ConvertFromSecureString(SecureString ss)
         {
             IntPtr pPoint = Marshal.SecureStringToBSTR(ss);
             string plain = Marshal.PtrToStringAuto(pPoint);
@@ -38,7 +77,35 @@ namespace ConfigMgr
             return plain;
         }
 
-        public int FindNextNumber(List<int> list)
+        public static int? FindMissingNumber(List<int> list)
+        {
+            int? firstMissingNumber = null;
+
+            list.Sort();
+
+            int firstNumber = list.First();
+            int lastNumber = list.Last();
+
+            if (firstNumber == 1 && lastNumber == 1)
+                firstMissingNumber = 2;
+
+            else
+            {
+                IEnumerable<int> range = Enumerable.Range(firstNumber, lastNumber - firstNumber);
+
+                if (!range.Contains(1))
+                    firstMissingNumber = 1;
+
+                else if (range != null)
+                {
+                    IEnumerable<int> setDifferences = range.Except(list);
+                    firstMissingNumber = !IsNullOrEmpty(setDifferences) ? range.Except(list).First() : FindNextNumber(list);
+                }
+            }
+            return firstMissingNumber;
+        }
+
+        public static int FindNextNumber(List<int> list)
         {
             list.Sort();
             int lastNumber = list.Last();
@@ -47,7 +114,7 @@ namespace ConfigMgr
             return nextNumber;
         }
 
-        public bool IsNullOrEmpty<T>(IEnumerable<T> enumerable) =>
+        public static bool IsNullOrEmpty<T>(IEnumerable<T> enumerable) =>
             enumerable == null || !enumerable.Any();
 
         public void WriteEventLog(string logEntry, EventLogEntryType entryType = ID_DEF)

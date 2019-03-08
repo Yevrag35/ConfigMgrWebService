@@ -5912,7 +5912,7 @@ namespace ConfigMgrWebService
                     {
                         //' Getting the set difference
                         IEnumerable<int> setDifference = range.Except(list);
-                        if (!IsNullOrEmpty<int>(setDifference))
+                        if (!IsNullOrEmpty(setDifference))
                         {
                             firstMissingNumber = range.Except(list).First();
                         }
