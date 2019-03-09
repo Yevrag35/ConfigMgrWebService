@@ -37,9 +37,13 @@ namespace ConfigMgr
             if (this.LogTriggered != null)
                 this.LogTriggered(this, e);
         }
-        protected private void OnLogTriggered(LogTriggerAction action, string method, string address)
+        public void OnLogTriggered(LogTriggerAction action, MethodBase method, string address)
         {
             this.OnLogTriggered(new LogTriggerEventArgs(action, method, address));
+        }
+        public void OnLogTriggered(LogTriggerAction action, MethodBase method)
+        {
+            this.OnLogTriggered(new LogTriggerEventArgs(action, method));
         }
 
         private void StartTimer() => _timer.Start();

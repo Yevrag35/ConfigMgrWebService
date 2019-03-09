@@ -1,10 +1,6 @@
 ﻿using ConfigMgr.Enums;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace ConfigMgr.Events
 {
@@ -13,14 +9,16 @@ namespace ConfigMgr.Events
     public class LogTriggerEventArgs : EventArgs
     {
         public LogTriggerAction Action { get; }
-        public string Method { get; }
+        public MethodBase Method { get; }
         public string UserHostAddress { get; }
 
-        public LogTriggerEventArgs(LogTriggerAction action, string method, string userAddress)
+        public LogTriggerEventArgs(LogTriggerAction action, MethodBase method, string userAddress)
+            : this(action, method) => UserHostAddress = userAddress;
+
+        public LogTriggerEventArgs(LogTriggerAction action, MethodBase method)
         {
             Action = action;
             Method = method;
-            UserHostAddress = userAddress;
         }
     }
 }
