@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ConfigMgr.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace ConfigMgr.WebApi.Controllers
+namespace ConfigMgr.WebApi
 {
     [SimpleAuth]
     [WindowsAuth]
@@ -16,9 +17,9 @@ namespace ConfigMgr.WebApi.Controllers
 
         [HttpGet]
         [Route("api/ad/computer")]
-        public IEnumerable<ADComputer> GetAll()
+        public string Get()
         {
-            Helper.GetADObject()
+            return Helper.GetADObject("DGRLAB-SCCM", ADObjectClass.Computer, ADObjectType.DistinguishedName);
         }
     }
 }

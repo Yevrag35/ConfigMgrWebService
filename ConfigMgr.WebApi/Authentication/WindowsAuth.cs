@@ -24,8 +24,8 @@ namespace ConfigMgr.WebApi
                 if (winId.AuthenticationType != "Negotiate")
                     return;
 
-                if (!context.Request.Headers.Authorization.Parameter.StartsWith("Y", StringComparison.CurrentCulture))
-                    return;
+                //if (!context.Request.Headers.Authorization.Parameter.StartsWith("Y", StringComparison.CurrentCulture))
+                //    return;
 
                 if (!winId.IsAuthenticated)
                     return;
@@ -54,8 +54,8 @@ namespace ConfigMgr.WebApi
         private async Task<List<string>> CheckSCCMRights(IEnumerable<string> sids)
         {
             string sqlConStr = string.Format(
-                Constants.SQL_CONNECTION_STRING, 
-                ConfigurationManager.AppSettings[Constants.PRIMARY_SITE_SERVER], 
+                Constants.SQL_CONNECTION_STRING,
+                ConfigurationManager.AppSettings["SQLServer"], 
                 ConfigurationManager.AppSettings[Constants.SITE_CODE]
             );
             string admObj = null;
