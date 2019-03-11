@@ -55,11 +55,13 @@
   <ItemGroup>
     <Compile Include="Enums.cs" />
     <Compile Include="Events\EventHandlers.cs" />
+    <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Helpers\IADHelper.cs" />
     <Compile Include="Objects\ADComputer.cs" />
     <Compile Include="Objects\ADDomain.cs" />
     <Compile Include="Objects\ADGroup.cs" />
+    <Compile Include="Objects\ADObject.cs" />
     <Compile Include="Objects\ADOrganizationalUnit.cs" />
     <Compile Include="Objects\CMApplication.cs" />
     <Compile Include="Objects\CMCollection.cs" />

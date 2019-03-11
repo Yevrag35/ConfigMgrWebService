@@ -1,5 +1,8 @@
-﻿using System;
+﻿using ConfigMgr.Enums;
+using ConfigMgr.Events;
+using System;
 using System.Configuration;
+using System.Reflection;
 using System.Web;
 using System.Web.Http;
 
@@ -8,6 +11,7 @@ namespace ConfigMgr.WebApi
     public static class WebApiConfig
     {
         private const string API_KEY = "ApiKey";
+        internal static ADHelper Helper = new ADHelper();
 
         public static string GetUserHostAddress()
         {
@@ -19,6 +23,7 @@ namespace ConfigMgr.WebApi
             // Web API configuration and services
             config.Filters.Add(new SimpleAuth());
             config.Filters.Add(new WindowsAuth());
+            
 
             // Web API routes
             config.MapHttpAttributeRoutes();
@@ -35,5 +40,6 @@ namespace ConfigMgr.WebApi
             string thisKey = ConfigurationManager.AppSettings[API_KEY];
             return thisKey.Equals(inputKey);
         }
+        
     }
 }

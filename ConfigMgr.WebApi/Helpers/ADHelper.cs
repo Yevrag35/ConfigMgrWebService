@@ -10,6 +10,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading;
 
 namespace ConfigMgr.WebApi
 {
@@ -17,13 +18,17 @@ namespace ConfigMgr.WebApi
     {
         private const string ERR_MSG = "An error occured {0}. Error message: {1}";
         private const string ERR_ADD_COMP = "when attempting to add a computer object in Active Directory to a group";
+        private string[] CompPropsToLoad => new string[4]
+        {
+            Constants.DN, Constants.CN, Constants.DNS_NAME, Constants.SAM
+        };
 
         #region METHODS
 
         #region ADD METHODS
         public bool AddADComputerToGroup(string groupName, string computerName)
         {
-            this.OnLogTriggered(LogTriggerAction.Begin, MethodBase.GetCurrentMethod(), WebApiConfig.GetUserHostAddress());
+            this.OnLogTriggered(LogTriggerAction.Begin, MethodBase.GetCurrentMethod(), WebApiConfig.GetUserHostAddress(), null);
 
             bool returnValue = false;
             string computerDN = this.GetADObject(computerName, ADObjectClass.Computer, ADObjectType.DistinguishedName).Remove(0, 7);
@@ -52,6 +57,34 @@ namespace ConfigMgr.WebApi
         #endregion
 
         #region GET METHODS
+        public ADComputer GetADComputer(string name, Domain domain, string address, string userName)
+        {
+            var mb = MethodBase.GetCurrentMethod();
+            this.OnLogTriggered(LogTriggerAction.Begin, mb, address, userName);
+            ADComputer adComp = null;
+            using (var de = domain.GetDirectoryEntry())
+            {
+                string sFilter = string.Format("(&(objectClass=computer)((sAMAccountName={0}$)))", name);
+                using (var ds = new DirectorySearcher(de, sFilter, CompPropsToLoad, SearchScope.Subtree))
+                {
+                    try
+                    {
+                        SearchResult sr = ds.FindOne();
+                        using (var objEntry = sr.GetDirectoryEntry())
+                        {
+                            adComp = new ADComputer(objEntry);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+            //Thread.Sleep(3000);
+            this.OnLogTriggered(LogTriggerAction.End, mb);
+            return adComp;
+        }
+
         public string GetADDefaultNamingContext()
         {
             using (var rootDSE = new DirectoryEntry("LDAP://RootDSE"))

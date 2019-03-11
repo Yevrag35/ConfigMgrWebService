@@ -15,10 +15,10 @@ namespace ConfigMgr
 {
     public class Helper : ITriggerLog
     {
-        private const string EVENT_BEG_TRIGGER_MSG = "Web service method {0} was triggered from {1}";
+        private const string EVENT_BEG_TRIGGER_MSG = "Web service method {0} was triggered from {1} by {2}";
         private const string EVENT_END_TRIGGER_MSG = "Web service method {0} completed.  Elapsed time: {1}";
-        private const string EVENT_LOG_SOURCE = "ConfigMgr Web Service";
-        private const string EVENT_LOG_SOURCE_ACT = EVENT_LOG_SOURCE + " Activity";
+        public const string EVENT_LOG_SOURCE = "ConfigMgr Web Service";
+        public const string EVENT_LOG_SOURCE_ACT = EVENT_LOG_SOURCE + " Activity";
         private const EventLogEntryType ID_DEF = EventLogEntryType.Information;
         private const int ID_INFO = 1000;
         private const int ID_WARN = 1001;
@@ -37,9 +37,9 @@ namespace ConfigMgr
             if (this.LogTriggered != null)
                 this.LogTriggered(this, e);
         }
-        public void OnLogTriggered(LogTriggerAction action, MethodBase method, string address)
+        public void OnLogTriggered(LogTriggerAction action, MethodBase method, string address, string userName)
         {
-            this.OnLogTriggered(new LogTriggerEventArgs(action, method, address));
+            this.OnLogTriggered(new LogTriggerEventArgs(action, method, address, userName));
         }
         public void OnLogTriggered(LogTriggerAction action, MethodBase method)
         {
@@ -56,10 +56,10 @@ namespace ConfigMgr
             return timeSpan;
         }
 
-        public void MethodBegin(MethodBase methodBase, string userHostAddress)
+        public void MethodBegin(MethodBase methodBase, string userHostAddress, string userName)
         {
             this.StartTimer();
-            string msg = string.Format(EVENT_BEG_TRIGGER_MSG, methodBase.Name, userHostAddress);
+            string msg = string.Format(EVENT_BEG_TRIGGER_MSG, methodBase.Name, userHostAddress, userName);
             this.WriteEventLog(msg);
         }
 

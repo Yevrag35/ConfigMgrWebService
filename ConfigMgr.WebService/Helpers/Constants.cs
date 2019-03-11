@@ -2,12 +2,8 @@
 using Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine;
 using System;
 using System.Configuration;
-using System.Diagnostics;
-using System.Reflection;
-using System.Web;
-using System.Web.Http;
 
-namespace ConfigMgr.WebApi
+namespace ConfigMgr
 {
     public static class Constants
     {
@@ -74,43 +70,5 @@ namespace ConfigMgr.WebApi
         public const string SQL_CONNECTION_STRING = "Server={0};Initial Catalog=CM_{1};Integrated Security=true;Encrypt=true;TrustServerCertificate=yes;";
 
         public const string RBAC_ADMIN_FUNCTION = @"SELECT dbo.fn_rbac_GetAdminIDsfromUserSIDs('{0}')";
-
-        public const int API_CALL_EVENT_ID = 1010;
-        public const string API_CALL_EVENT_MSG = "Received API call: {0}";
-    }
-
-    public static class Methods
-    {
-        public static WqlConnectionManager NewSMSProvider()
-        {
-            string serverName = ConfigurationManager.AppSettings[Constants.PRIMARY_SITE_SERVER];
-
-            // Used for Testing
-            //string username = ConfigurationManager.AppSettings["UserName"];
-            //string password = ConfigurationManager.AppSettings["Password"];
-
-            var nvs = new SmsNamedValuesDictionary();
-            var wql = new WqlConnectionManager(nvs);
-
-            //wql.Connect(serverName, username, password);
-            wql.Connect(serverName);
-            return wql;
-        }
-
-        public static void WriteApiLog()
-        {
-            using (var eventLog = new EventLog
-            {
-                Source = Helper.EVENT_LOG_SOURCE,
-                Log = Helper.EVENT_LOG_SOURCE_ACT
-            })
-            {
-                if (!EventLog.SourceExists(Helper.EVENT_LOG_SOURCE))
-                    EventLog.CreateEventSource(Helper.EVENT_LOG_SOURCE, Helper.EVENT_LOG_SOURCE_ACT);
-
-                string msg = string.Format(Constants.API_CALL_EVENT_MSG, HttpContext.Current.Request.Url.ToString());
-                eventLog.WriteEntry(msg, EventLogEntryType.Information, Constants.API_CALL_EVENT_ID);
-            }
-        }
     }
 }
