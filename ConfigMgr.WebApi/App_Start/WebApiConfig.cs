@@ -1,5 +1,8 @@
 ﻿using ConfigMgr.Enums;
 using ConfigMgr.Events;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Configuration;
 using System.Reflection;
@@ -23,6 +26,15 @@ namespace ConfigMgr.WebApi
             // Web API configuration and services
             config.Filters.Add(new SimpleAuth());
             config.Filters.Add(new WindowsAuth());
+
+            config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                TypeNameHandling = TypeNameHandling.None,
+                PreserveReferencesHandling = PreserveReferencesHandling.None
+            };
             
 
             // Web API routes

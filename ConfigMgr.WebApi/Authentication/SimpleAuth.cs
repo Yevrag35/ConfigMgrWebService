@@ -66,7 +66,7 @@ namespace ConfigMgr.WebApi
             IPrincipal prin = null;
             if (configKey.Equals(passedKey))
             {
-                var id = new GenericIdentity("TaskSequenceApi", "Basic");
+                var id = new GenericIdentity("API Key Identity", "Basic");
                 prin = new ApiPrincipal(id, new string[1] { "Full Administrator" });
             }
             return prin;

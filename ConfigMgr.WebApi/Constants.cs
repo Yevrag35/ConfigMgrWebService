@@ -13,9 +13,16 @@ namespace ConfigMgr.WebApi
     {
         #region Active Directory
         public const string CN = "cn";
+        public const string COMP = "computer";
         public const string DN = "distinguishedName";
         public const string DNS_NAME = "dNSHostName";
+        public const string FQDN_FORMAT = "{0}.{1}";
+        public const string GC_FORMAT = "GC://{0}";
+        public const string GC_WITH_DC = GC_FORMAT + "/{1}";
         public const string SAM = "sAMAccountName";
+
+        public const string LDAP_FILTER_CLS = "(objectClass={0})";
+        public const string LDAP_FILTER_CLS_SAM = "(&" + LDAP_FILTER_CLS + "(sAMAccountName={1}$))";
 
         #endregion
 

@@ -28,7 +28,7 @@ namespace ConfigMgr.WebApi
         #region ADD METHODS
         public bool AddADComputerToGroup(string groupName, string computerName)
         {
-            this.OnLogTriggered(LogTriggerAction.Begin, MethodBase.GetCurrentMethod(), WebApiConfig.GetUserHostAddress(), null);
+            this.OnLogTriggered(LogTriggerAction.Begin, MethodBase.GetCurrentMethod());
 
             bool returnValue = false;
             string computerDN = this.GetADObject(computerName, ADObjectClass.Computer, ADObjectType.DistinguishedName).Remove(0, 7);
@@ -57,10 +57,11 @@ namespace ConfigMgr.WebApi
         #endregion
 
         #region GET METHODS
-        public ADComputer GetADComputer(string name, Domain domain, string address, string userName)
+
+        public ADComputer GetADComputer(string name, Domain domain)
         {
             var mb = MethodBase.GetCurrentMethod();
-            this.OnLogTriggered(LogTriggerAction.Begin, mb, address, userName);
+            this.OnLogTriggered(LogTriggerAction.Begin, mb);
             ADComputer adComp = null;
             using (var de = domain.GetDirectoryEntry())
             {

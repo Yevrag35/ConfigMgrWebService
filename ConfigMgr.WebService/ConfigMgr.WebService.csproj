@@ -59,6 +59,7 @@
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Helpers\IADHelper.cs" />
     <Compile Include="Objects\ADComputer.cs" />
+    <Compile Include="Objects\ADComputerWithDC.cs" />
     <Compile Include="Objects\ADDomain.cs" />
     <Compile Include="Objects\ADGroup.cs" />
     <Compile Include="Objects\ADObject.cs" />

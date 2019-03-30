@@ -13,7 +13,7 @@ using System.Web;
 
 namespace ConfigMgr
 {
-    public class Helper : ITriggerLog
+    public class Helper// : ITriggerLog
     {
         private const string EVENT_BEG_TRIGGER_MSG = "Web service method {0} was triggered from {1} by {2}";
         private const string EVENT_END_TRIGGER_MSG = "Web service method {0} completed.  Elapsed time: {1}";

@@ -9,7 +9,7 @@ namespace ConfigMgr.Events
     {
         event LogTriggerEventHandler LogTriggered;
 
-        void MethodBegin(MethodBase methodBase, string userHostAddress, string userName);
+        void MethodBegin(MethodBase methodBase);
         void MethodEnd(MethodBase methodBase);
     }
 }
