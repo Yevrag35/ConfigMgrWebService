@@ -16,7 +16,7 @@
     <RootNamespace>ConfigMgrWebService</RootNamespace>
     <AssemblyName>ConfigMgrWebService</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -34,19 +34,21 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdminUI.WqlQueryEngine, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\AdminUI.WqlQueryEngine.dll</HintPath>
+      <HintPath>D:\Local_Repos\ConfigMgrWebService\ConfigMgrWebService\Assemblies\AdminUI.WqlQueryEngine.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -54,7 +56,7 @@
     </Reference>
     <Reference Include="Microsoft.ConfigurationManagement.ManagementProvider, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\Microsoft.ConfigurationManagement.ManagementProvider.dll</HintPath>
+      <HintPath>D:\Local_Repos\ConfigMgrWebService\ConfigMgrWebService\Assemblies\Microsoft.ConfigurationManagement.ManagementProvider.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.DirectoryServices" />
@@ -97,6 +99,7 @@
     <Compile Include="ADDomain.cs" />
     <Compile Include="ADGroup.cs" />
     <Compile Include="ADOrganizationalUnit.cs" />
+    <Compile Include="Bases\BaseSms.cs" />
     <Compile Include="CMApplication.cs" />
     <Compile Include="CMCollection.cs" />
     <Compile Include="CMOSDMonitor.cs" />
@@ -115,6 +118,10 @@
     <Compile Include="ConfigMgrWebService.asmx.cs">
       <DependentUpon>ConfigMgrWebService.asmx</DependentUpon>
     </Compile>
+    <Compile Include="TypeDictionary.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assemblies\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
