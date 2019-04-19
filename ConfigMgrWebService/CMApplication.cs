@@ -13,6 +13,9 @@ namespace ConfigMgrWebService
         public string ApplicationVersion { get; set; }
         public DateTime ApplicationCreated { get; set; }
         public string ApplicationExecutionContext { get; set; }
+        public string CI_ID { get; set; }
         public string CollectionName { get; set; }
+        public CMApplicationDependency[] Dependencies { get; set; }
+        public int NumberOfDependencies { get; set; }
     }
 }

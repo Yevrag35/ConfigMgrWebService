@@ -2520,8 +2520,24 @@ namespace ConfigMgrWebService
                                 ApplicationManufacturer = app["Manufacturer"].StringValue,
                                 ApplicationVersion = app["SoftwareVersion"].StringValue,
                                 ApplicationCreated = app["DateCreated"].DateTimeValue,
-                                ApplicationExecutionContext = app["ExecutionContext"].StringValue
+                                ApplicationExecutionContext = app["ExecutionContext"].StringValue,
+                                CI_ID = app["CI_ID"].StringValue,
+                                NumberOfDependencies = app["NumberOfDependentDTs"].IntegerValue
                             };
+
+                            //' Check for dependencies...
+                            var depList = new List<CMApplicationDependency>();
+                            //' Find dependencies based on CI_ID
+                            string dependQuery = string.Format("SELECT * FROM SMS_AppDependenceRelation WHERE FromApplicationCIID={0}", application.CI_ID);
+                            using (IResultObject depResults = connection.QueryProcessor.ExecuteQuery(dependQuery))
+                            {
+                                foreach (IResultObject dependency in depResults)
+                                {
+                                    depList.Add(new CMApplicationDependency(dependency));
+                                }
+                            }
+                            application.Dependencies = depList.ToArray();
+
                             appList.Add(application);
                         }
                     }

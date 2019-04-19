@@ -98,6 +98,7 @@
     <Compile Include="ADGroup.cs" />
     <Compile Include="ADOrganizationalUnit.cs" />
     <Compile Include="CMApplication.cs" />
+    <Compile Include="CMApplicationDependency.cs" />
     <Compile Include="CMCollection.cs" />
     <Compile Include="CMOSDMonitor.cs" />
     <Compile Include="CMOSImage.cs" />
