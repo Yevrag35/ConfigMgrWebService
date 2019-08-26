@@ -3,6 +3,7 @@ using Microsoft.ConfigurationManagement.ManagementProvider.WqlQueryEngine;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
@@ -39,7 +40,9 @@ namespace MG.Sccm.Api
             SmsConnection connection = SmsConnectionManager.ConnectedSessions.Add(hostAddress, wql);
             try
             {
-                if (connection.Connection.Connect(serverName, "YEVRAG35\\Mike")
+                string pass = File.ReadAllText("C:\\Admin\\Pass.txt");
+
+                if (connection.Connection.Connect(serverName, "YEVRAG35\\Mike", pass))
                 {
                     HttpStatusCode code = !exists
                         ? HttpStatusCode.Created
