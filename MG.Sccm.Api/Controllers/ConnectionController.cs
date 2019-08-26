@@ -39,7 +39,7 @@ namespace MG.Sccm.Api
             SmsConnection connection = SmsConnectionManager.ConnectedSessions.Add(hostAddress, wql);
             try
             {
-                if (connection.Connection.Connect(serverName, "YEVRAG35\\Mike", "N37s7a7"))
+                if (connection.Connection.Connect(serverName, "YEVRAG35\\Mike")
                 {
                     HttpStatusCode code = !exists
                         ? HttpStatusCode.Created
