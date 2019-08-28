@@ -24,7 +24,7 @@ namespace MG.Sccm.Api
         /// </summary>
         /// <typeparam name="T">The type of class to deserialize the <see cref="IResultObject"/> into.</typeparam>
         /// <param name="iResultObject">The SCCM WMI query result object to deserialize.</param>
-        public static T DeserializeIResult<T>(IResultObject iResultObject) where T : BaseWmiObject
+        public static T DeserializeIResult<T>(IResultObject iResultObject, SmsConnection connection = null) where T : BaseWmiObject
         {
             iResultObject.Get();
             var newTee = (T)Activator.CreateInstance(typeof(T), new object[1] { iResultObject.ConnectionManager });
@@ -34,8 +34,7 @@ namespace MG.Sccm.Api
 
             // Get all properties of T that have attributes (excluding JsonIgnoreAttribute).
             var writableProps = typeof(T).GetProperties().Where(
-                x => x.GetCustomAttributes().Count() != 0 && !x.GetCustomAttributes().Any(
-                    a => a.GetType().Equals(typeof(JsonIgnoreAttribute)))).ToList();
+                x => x.GetCustomAttributes().Count() != 0).ToList();
 
             // Build a dictionary of PropertyInfo items and possible IResultObject property names.
             Dictionary<PropertyInfo, KeyValuePair<string, string>> propsAndAtts = GetPropsAndAtts(writableProps);
@@ -79,8 +78,12 @@ namespace MG.Sccm.Api
                 }
                 else
                 {
-                    var jtok = JToken.FromObject(iResultObject[propName].ObjectValue);
-                    newTee.ExtraData.Add(propName, jtok);
+                    object obj = iResultObject[propName].ObjectValue;
+                    if (obj != null)
+                    {
+                        var jtok = JToken.FromObject(obj);
+                        newTee.ExtraData.Add(propName, jtok);
+                    }
                 }
             }
 
@@ -89,7 +92,11 @@ namespace MG.Sccm.Api
                 MethodInfo mi = typeof(T).GetMethod("OnSccmDeserialized", BindingFlags.NonPublic | BindingFlags.Instance);
                 if (mi != null)
                 {
-                    mi.Invoke(newTee, null);
+                    if (connection != null)
+                        mi.Invoke(newTee, new object[1] { connection });
+
+                    else
+                        mi.Invoke(newTee, null);
                 }
             }
 

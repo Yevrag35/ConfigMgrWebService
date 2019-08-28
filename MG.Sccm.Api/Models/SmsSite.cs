@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Management;
 
-namespace MG.Sccm.Api
+namespace MG.Sccm.Api.Models
 {
     public class SmsSite : BaseWmiObject
     {

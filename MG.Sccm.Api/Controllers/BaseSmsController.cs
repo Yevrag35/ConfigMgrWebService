@@ -8,11 +8,14 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace MG.Sccm.Api
 {
     public abstract class BaseSmsController : ApiController
     {
+        private const string BAD_HEADER_MSG = "Missing \"sccm-session-id\" header.";
+
         public bool TryGetConnection(out SmsConnection connection)
         {
             bool result = false;
@@ -24,6 +27,8 @@ namespace MG.Sccm.Api
             }
             return result;
         }
+
+        protected IHttpActionResult ThrowHeaderError() => base.ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.BadRequest, BAD_HEADER_MSG));
 
         private bool TryGetSessionIdFromHeaders(out Guid sessionId)
         {

@@ -40,9 +40,9 @@ namespace MG.Sccm.Api
             SmsConnection connection = SmsConnectionManager.ConnectedSessions.Add(hostAddress, wql);
             try
             {
-                string pass = File.ReadAllText("C:\\Admin\\Pass.txt");
+                //string pass = File.ReadAllText("C:\\Admin\\Pass.txt");
 
-                if (connection.Connection.Connect(serverName, "YEVRAG35\\Mike", pass))
+                if (connection.Connect(serverName))
                 {
                     HttpStatusCode code = !exists
                         ? HttpStatusCode.Created

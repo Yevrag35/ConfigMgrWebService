@@ -69,6 +69,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -129,12 +130,16 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseSmsController.cs" />
     <Compile Include="Controllers\ConnectionController.cs" />
+    <Compile Include="Controllers\SmsApplicationController.cs" />
     <Compile Include="Controllers\SmsSiteController.cs" />
+    <Compile Include="Controllers\SmsSiteServerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IOutputToJson.cs" />
+    <Compile Include="Models\SmsApplication.cs" />
     <Compile Include="Models\SmsSite.cs" />
+    <Compile Include="Models\SmsSiteServer.cs" />
     <Compile Include="Objects\Attributes.cs" />
     <Compile Include="Objects\BaseWmiObject.cs" />
     <Compile Include="Objects\ConnectionCollection.cs" />

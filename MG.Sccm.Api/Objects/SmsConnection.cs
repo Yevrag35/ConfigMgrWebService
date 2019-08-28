@@ -6,9 +6,16 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Net;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Security;
+using System.Security.Cryptography;
+using System.Text;
+using System.Timers;
 
 namespace MG.Sccm.Api
 {
@@ -16,7 +23,14 @@ namespace MG.Sccm.Api
     public sealed class SmsConnection : IDisposable
     {
         #region FIELDS/CONSTANTS
+        private const int BYTE_BASE = 16;
+        private const double TIME_ELASPED = 10800000;   // 3 hours
+
         private bool _isDisp;
+        private Timer _timer;
+        private byte[] _secPass;
+        private int _origLength;
+        private string _user;
 
         #endregion
 
@@ -25,6 +39,8 @@ namespace MG.Sccm.Api
         public ConnectionManagerBase Connection { get; }
         [JsonExtensionData]
         public ExtensionData Data { get; set; }
+        [JsonIgnore]
+        public bool HasCredentials => !string.IsNullOrEmpty(_user);
         [JsonIgnore]
         public Guid SessionId { get; }
         [JsonIgnore]
@@ -35,6 +51,8 @@ namespace MG.Sccm.Api
         #region CONSTRUCTORS
         public SmsConnection()
         {
+            _timer = new Timer(TIME_ELASPED);
+            _timer.Elapsed += new ElapsedEventHandler(this.OnTimerElapsed);
             this.Data = new ExtensionData();
             this.SessionId = Guid.NewGuid();
         }
@@ -44,6 +62,51 @@ namespace MG.Sccm.Api
         #endregion
 
         #region PUBLIC METHODS
+        public bool Connect(string serverName)
+        {
+            bool result = this.Connection.Connect(serverName);
+            if (result)
+                _timer.Start();
+
+            return result;
+        }
+        public bool Connect(string serverName, string userName, string password)
+        {
+            bool result = this.Connection.Connect(serverName, userName, password);
+            if (result)
+            {
+                _user = userName;
+                byte[] realBytes = Encoding.UTF8.GetBytes(password);
+                _origLength = realBytes.Length;
+                int round = _origLength / BYTE_BASE + 1;
+
+                int newLength = round * BYTE_BASE;
+                _secPass = new byte[newLength];
+                for (int i = 0; i < _origLength; i++)
+                {
+                    _secPass[i] = realBytes[i];
+                }
+                ProtectedMemory.Protect(_secPass, MemoryProtectionScope.SameProcess);
+
+                _timer.Start();
+            }
+            return result;
+        }
+
+        internal NetworkCredential GetConnectingCredential()
+        {
+            NetworkCredential netCreds = null;
+            if (this.HasCredentials)
+            {
+                byte[] newBytes = new byte[_origLength];
+                ProtectedMemory.Unprotect(_secPass, MemoryProtectionScope.SameProcess);
+                _secPass.ToList().CopyTo(0, newBytes, 0, _origLength);
+                ProtectedMemory.Protect(_secPass, MemoryProtectionScope.SameProcess);
+                netCreds = new NetworkCredential(_user, Encoding.UTF8.GetString(newBytes));
+            }
+            return netCreds;
+        }
+
         [OnSerializing]
         private void OnSerializing(StreamingContext context)
         {
@@ -70,6 +133,8 @@ namespace MG.Sccm.Api
         {
             if (!_isDisp)
             {
+                _timer.Stop();
+                _timer.Dispose();
                 this.Connection.Close();
                 this.Connection.Dispose();
                 GC.SuppressFinalize(this.Connection);
@@ -82,6 +147,8 @@ namespace MG.Sccm.Api
 
         #region BACKEND/PRIVATE METHODS
 
+
+        private void OnTimerElapsed(object sender, ElapsedEventArgs e) => SmsConnectionManager.ConnectedSessions.Remove(this);
 
         #endregion
     }
