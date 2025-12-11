@@ -10,7 +10,6 @@
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9A0DC841-CDB0-4B6D-B1B4-42E307A7675C}</ProjectGuid>
-    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ConfigMgrWebService</RootNamespace>
@@ -95,18 +94,20 @@
     <Compile Include="ADComputer.cs" />
     <Compile Include="ADDomain.cs" />
     <Compile Include="ADGroup.cs" />
+    <Compile Include="ADOperations\AddADComputerToGroupByDC.cs" />
+    <Compile Include="ADOperations\AddADUserToGroupByDC.cs" />
     <Compile Include="ADOperations\GetADComputerByDC.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ADOperations\GetADGroupMembersByDC.cs" />
+    <Compile Include="ADOperations\GetADGroupsByUserByDC.cs" />
     <Compile Include="ADOperations\GetADObject.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ADOperations\RemoveADComputerByDC.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ADOperations\SetADOrganizationalUnitForComputer.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="ADOperations\RemoveADComputerByDC.cs" />
+    <Compile Include="ADOperations\RemoveADComputerFromGroupByDC.cs" />
+    <Compile Include="ADOperations\SetADComputerManagedByByDC.cs" />
+    <Compile Include="ADOperations\SetADOrganizationalUnitForComputerByDC.cs" />
     <Compile Include="ADOrganizationalUnit.cs" />
     <Compile Include="CMApplication.cs" />
     <Compile Include="CMCollection.cs" />
@@ -143,24 +144,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
-        <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>60167</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:65400</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
-        </WebProjectProperties>
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
+  <ProjectExtensions />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
